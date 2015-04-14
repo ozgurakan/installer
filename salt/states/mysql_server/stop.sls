@@ -8,4 +8,3 @@ mysql_stop:
     - name: echo "Mysql Server Instance is stopped"
       {%- endif -%}
     {%- endfor -%}
-

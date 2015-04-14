@@ -1,5 +1,5 @@
 include:
-  - mysqlserver.stop
+  - mysql_server.stop
 
 
 mysql_restart:
@@ -21,4 +21,4 @@ mysql_restart:
     - name: service mysql start
     {%- endif %}
     - require:
-      - sls : mysqlserver.stop
+      - sls : mysql_server.stop

@@ -13,14 +13,14 @@ wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 # Galera Cluster Configuration
 wsrep_cluster_name="MySQLCluster"
 wsrep_cluster_address="gcomm://
-{%- for servername,clusterid  in salt ['mine.get']('G@cluster-id:mysql* and G@role:mysql', 'serverid','compound').items() -%}
-{%- if servername !=  grains['id'] and clusterid == grains['cluster-id'] -%}
-{{ servername }},
-{%- endif -%}
+{%- for key, value  in salt ['mine.get']('G@cluster-id:' + grains['cluster-id'] + ' and G@role:mysql', 'grains.items','compound').items() -%}
+{%-   if value['id'] !=  grains['id'] and value['cluster-id'] == grains['cluster-id'] -%}
+{{ value['id'] }},
+{%-   endif -%}
 {%- endfor -%}
 "
 
-# Galera Synchronization Congifuration
+# Galera Synchronization Configuration
 wsrep_sst_method=rsync
 #wsrep_sst_auth=user:pass
 

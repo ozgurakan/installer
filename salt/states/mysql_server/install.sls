@@ -1,3 +1,6 @@
+include:
+  - mysql_server.repo
+
 mysql_install:
   pkg.installed:
     - pkgs:
