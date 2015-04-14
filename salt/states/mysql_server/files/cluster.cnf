@@ -11,12 +11,10 @@ wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #wsrep_provider_options="gcache.size=32G"
 
 # Galera Cluster Configuration
-wsrep_cluster_name="MySQLCluster"
+wsrep_cluster_name="{{ salt['grains.get']('cluster-id', 'mysql-default-cluster') }}"
 wsrep_cluster_address="gcomm://
 {%- for key, value  in salt ['mine.get']('G@cluster-id:' + grains['cluster-id'] + ' and G@role:mysql', 'grains.items','compound').items() -%}
-{%-   if value['id'] !=  grains['id'] and value['cluster-id'] == grains['cluster-id'] -%}
-{{ value['id'] }},
-{%-   endif -%}
+{{    value['ipv4'][1] }},
 {%- endfor -%}
 "
 
@@ -25,5 +23,10 @@ wsrep_sst_method=rsync
 #wsrep_sst_auth=user:pass
 
 # Galera Node Configuration
-wsrep_node_address={{ salt['cmd.run']('hostname -I') }}
-wsrep_node_name={{ salt['cmd.run']('hostname') }}
+{%  set master_host = [] %}
+{%- for key, value  in salt ['mine.get']('G@cluster-id:' + grains['cluster-id'] + ' and G@role:mysql and G@mysql-is-master:true', 'grains.items','compound').items() -%}
+{%    do master_host.append(value['id']) %}
+{%- endfor -%}
+
+wsrep_node_address={{ master_host[0] }}
+wsrep_node_name={{ salt['grains.get']('host') }}
