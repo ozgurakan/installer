@@ -12,10 +12,14 @@ wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 
 # Galera Cluster Configuration
 wsrep_cluster_name="{{ salt['grains.get']('cluster-id', 'mysql-default-cluster') }}"
-wsrep_cluster_address="gcomm://
+
+{% set ip_addresses = [] %}
 {%- for key, value  in salt ['mine.get']('G@cluster-id:' + grains['cluster-id'] + ' and G@role:mysql', 'grains.items','compound').items() -%}
-{{    value['ipv4'][1] }},
+{%    do ip_addresses.append(value['ipv4'][1]) %}
 {%- endfor -%}
+
+wsrep_cluster_address="gcomm://
+{{- ip_addresses|join(',') -}}
 "
 
 # Galera Synchronization Configuration
