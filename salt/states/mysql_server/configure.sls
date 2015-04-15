@@ -1,5 +1,3 @@
-{% if 'cluster-id' in grains %}
-
 {% from "mysql_server/files/map.jinja" import mysql with context %}
 
 mysql_configure:
@@ -10,4 +8,3 @@ mysql_configure:
     - makedirs: True
     - replace: True
     - template: jinja
-{% endif %}
