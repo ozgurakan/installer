@@ -27,10 +27,5 @@ wsrep_sst_method=rsync
 #wsrep_sst_auth=user:pass
 
 # Galera Node Configuration
-{%  set master_host = [] %}
-{%- for key, value  in salt ['mine.get']('G@cluster-id:' + grains['cluster-id'] + ' and G@role:mysql and G@mysql-is-master:true', 'grains.items','compound').items() -%}
-{%    do master_host.append(value['id']) %}
-{%- endfor -%}
-
-wsrep_node_address={{ master_host[0] }}
+wsrep_node_address={{ salt['grains.get']('ipv4')[1] }}
 wsrep_node_name={{ salt['grains.get']('host') }}
